@@ -2264,6 +2264,39 @@ cnm怎么都是科技题。
 
 那么总复杂度为 $O(2^{\sqrt{2n}}\mathrm{poly}(n))$。
 
+## D
+
+记平面上点的原权值为 $a_{x,y}$，定义 $d_{x,y}=a_{x,y}-a{x-1,y}-a_{x,y-1}+a_{x-1,y-1}$ 为二维差分，那么 $\sum_{x=x_1}^{x_2}\sum_{y=y_1}^{y_2}a_{x,y}=\sum_{x=-\infty}^{x_2}\sum_{y=-\infty}^{y_2}d_{x,y}(x_2-\max(x_1,x)+1)(y_2-\max(y_1,y)+1)$.
+
+拆解一下相当于我们要对 $\sigma=\sum_{i=-\infty}^{x}\sum_{j=-\infty}^{y} d_{i,j},\sigma_x=\sum_{i=-\infty}^{x}\sum_{j=-\infty}^{y}id_{i,j},\sigma_y=\sum_{i=-\infty}^{x}\sum_{j=-\infty}^{y} jd_{i,j},\sigma_{x,y}=\sum_{i=-\infty}^{x}\sum_{j=-\infty}^{y} ijd_{i,j}$ 分别求值。
+
+一次修改 $x,y,d,w$ 相当于对 $\forall i\in[-d+1,d],d_{x+i,y+i}:=d_{x+i,y+i}+w,d_{x+i,y+1-i}:=d_{x+i,y+i}-w$。拆解一下可以变为：
+
+- 对于 $x-y=d,x\ge c$ 的 $(x,y)$，令 $d_{x,y}:=d_{x,y}+w$。
+- 对于 $x+y=d,x\ge c$ 的 $(x,y)$，令 $d_{x,y}:=d_{x,y}+w$。
+
+对于第一种，考虑修改的 $(x,y)$ 为 $(x_M,y_M)$，询问的右上端点为 $(x_Q,y_Q)$。如果 $y_M-x_M\le y_Q-x_Q\land x_M\le x_Q$，那么
+
+- $\Delta \sigma=(x_Q-x_M+1)w$.
+- $\Delta\sigma_x=\sum_{x=x_M}^{x_Q}xw=(x_M+x_Q)(x_Q-x_M+1)w/2$.
+- $\Delta\sigma_y=\sum_{x=x_M}^{x_Q}(x-x_M+y_M)w=(2y_M+x_Q-x_M)(x_Q-x_M+1)w/2$.
+
+- $\Delta\sigma_y=\sum_{x=x_M}^{x_Q}x(x-x_M+y_M)w=\frac{x_Q(x_Q+1)(2x_Q+1)-(x_M-1)x_M(2x_M-1)}6w+(y_M-x_M)(x_M+x_Q)(x_Q-x_M+1)w/2$.
+
+$y_M-x_M > y_Q-x_Q\land y_M\le y_Q$ 的情况类似。二维偏序，分别维护一次性二次项的和即可。
+
+对于第二种，考虑修改的 $(x,y)$ 为 $(x_M,y_M)$，询问的右上端点为 $(x_Q,y_Q)$。如果 $x_M\le x_Q\land y_M\le y_Q$，那么
+
+- $\Delta\sigma=(x_Q-x_M+1)w$.
+- $\Delta\sigma_x=\sum_{x=x_M}^{x_Q}xw=(x_M+x_Q)(x_Q-x_M+1)w/2$.
+- $\Delta\sigma_y=\sum_{x=x_M}^{x_Q}(x_M+y_M-x)w=(2y_M+x_M-x_Q)(x_Q-x_M+1)w/2$.
+
+- $\Delta\sigma_y=\sum_{x=x_M}^{x_Q}x(x_M+y_M-x)w=-\frac{x_Q(x_Q+1)(2x_Q+1)-(x_M-1)x_M(2x_M-1)}6w+(x_M+y_M)(x_M+x_Q)(x_Q-x_M+1)w/2$.
+
+对于 $x_M+y_M\le x_Q+y_Q\land y_M>y_Q$ 的情况，发现贡献只和 $x_M+y_M$ 及 $w$ 有关，简单处理。同样是二维偏序。
+
+总复杂度 $O(m\log^2m)$。
+
 # PTZ summer 2022 Day4
 
 ## K
